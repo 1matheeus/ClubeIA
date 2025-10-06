@@ -261,10 +261,10 @@ async function renderResults() {
 
     // Mapear turmas para nomes descritivos
     const nomesDescritivos = {
-      31: 'Desenvolvimento de Sistemas',
-      32: 'Administração',
-      33: 'Mecatrônica',
-      34: 'Informática para Internet'
+      31: 'Técnico em Telecomunicações',
+      32: 'Técnico em Equipamentos Biomédicos',
+      33: 'Técnico em Automação Industrial',
+      34: 'Técnico em Desenvolvimento de Sistemas (Games)'
     };
 
     const nomeCurso = nomesDescritivos[resultado.predicao] || resultado.nomeCurso;
