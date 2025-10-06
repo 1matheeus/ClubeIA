@@ -115,8 +115,8 @@ function renderQuestion() {
           </div>
         </div>
       </div>
-      <h1>Quiz - Ecologia Integral</h1>
-      <p class="subtitle-eco">"Criar com Propósito" 🌱</p>
+      <h1><span class="emoji">🎓</span> <span class="gradient-text">Quiz - Especialização Técnica</span> <span class="emoji">🎯</span></h1>
+      <p class="subtitle-eco"><span class="gradient-text">Qual Curso técnico da ETE FMC você se encaixa</span></p>
       <div class="progress-bar">
         <div class="progress-fill" style="width: ${(answeredCount / quizData.length) * 100}%"></div>
       </div>
@@ -259,7 +259,7 @@ async function renderResults() {
     // Pegar o último resultado (o mais recente)
     const resultado = data.resultados[data.resultados.length - 1];
 
-    // Mapear cursos para nomes descritivos
+    // Mapear turmas para nomes descritivos
     const nomesDescritivos = {
       31: 'Desenvolvimento de Sistemas',
       32: 'Administração',
@@ -280,8 +280,8 @@ async function renderResults() {
             </div>
           </div>
         </div>
-        <h1>� Curso Recomendado</h1>
-        <p class="subtitle-eco">"Criar com Propósito" 🌱</p>
+        <h1><span class="emoji">🎓</span> <span class="gradient-text">Turma Recomendada</span> <span class="emoji">🎯</span></h1>
+        <p class="subtitle-eco"><span class="gradient-text">Qual Curso técnico da ETE FMC você se encaixa</span></p>
         
         <div class="ia-prediction">
           <div class="prediction-badge">
@@ -303,7 +303,7 @@ async function renderResults() {
               <div class="prob-item ${isRecomendado ? 'recomendado' : ''}">
                 <div class="prob-header">
                   <span class="prob-label">
-                    ${isRecomendado ? '🎯 ' : ''}Curso ${prob.curso}
+                    ${isRecomendado ? '🎯 ' : ''}Turma ${prob.curso}
                   </span>
                   <span class="prob-name">${nomeDesc}</span>
                 </div>
