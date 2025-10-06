@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultados da IA - PROJETE 2025</title>
+  <style>
+    :root {
+      --primary-color: #0072BC;
+      --success-color: #6B9E3E;
+      --accent-green: #7FB539;
+      --bg-color: #E8DCC8;
+      --card-bg: #F5EFE3;
+      --text-color: #2C3E50;
+      --text-secondary: #5D6D7E;
+      --border-color: #0072BC;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', 'Helvetica', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 114, 188, 0.2);
+      border: 4px solid var(--border-color);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 3px solid var(--border-color);
+    }
+
+    .header h1 {
+      color: var(--primary-color);
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      font-size: 1.5rem;
+      color: var(--primary-color);
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid var(--bg-color);
+      border-top-color: var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 1rem auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-green));
+      color: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-top: 0.5rem;
+    }
+
+    .resultado-item {
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .resultado-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0, 114, 188, 0.3);
+    }
+
+    .resultado-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px dashed var(--border-color);
+    }
+
+    .resultado-titulo {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    .resultado-badge {
+      background: var(--success-color);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .respostas-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .resposta-box {
+      background: var(--primary-color);
+      color: white;
+      text-align: center;
+      padding: 0.8rem 0.5rem;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .predicao-principal {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      margin: 1rem 0;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .confianca {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+
+    .probabilidades {
+      margin-top: 1rem;
+    }
+
+    .prob-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.8rem;
+      padding: 0.8rem;
+      background: white;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .prob-item:hover {
+      background: rgba(0, 114, 188, 0.1);
+    }
+
+    .prob-label {
+      min-width: 100px;
+      font-weight: 500;
+    }
+
+    .prob-bar-container {
+      flex: 1;
+      height: 24px;
+      background: var(--bg-color);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .prob-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-green));
+      transition: width 0.6s ease;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 0.5rem;
+      color: white;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .btn-voltar {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 2rem;
+      display: block;
+      width: 100%;
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-voltar:hover {
+      background: var(--success-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 114, 188, 0.4);
+    }
+
+    .erro {
+      background: #ff6b6b;
+      color: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      margin: 2rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🤖 Análise da IA - PROJETE 2025</h1>
+      <p>Resultados das Predições do Random Forest</p>
+    </div>
+
+    <div id="content">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Processando respostas com a IA...</p>
+      </div>
+    </div>
+
+    <button class="btn-voltar" onclick="window.location.href='/'">← Voltar para o Quiz</button>
+  </div>
+
+  <script>
+    async function carregarResultados() {
+      try {
+        const response = await fetch('http://localhost:3000/processar-csv');
+        const data = await response.json();
+
+        if (!data.success) {
+          mostrarErro(data.message);
+          return;
+        }
+
+        mostrarResultados(data);
+      } catch (error) {
+        console.error('Erro ao carregar resultados:', error);
+        mostrarErro('Erro ao conectar com o servidor. Certifique-se de que o servidor está rodando.');
+      }
+    }
+
+    function mostrarResultados(data) {
+      const content = document.getElementById('content');
+      
+      let html = `
+        <div class="stats">
+          <div class="stat-card">
+            <span class="stat-number">${data.totalLinhas}</span>
+            <span class="stat-label">Total de Respostas</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">${data.processadas}</span>
+            <span class="stat-label">Processadas</span>
+          </div>
+        </div>
+      `;
+
+      data.resultados.forEach((resultado, index) => {
+        if (resultado.erro) {
+          html += `
+            <div class="resultado-item">
+              <div class="erro">
+                ❌ Erro na linha ${resultado.linha}: ${resultado.erro}
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        html += `
+          <div class="resultado-item">
+            <div class="resultado-header">
+              <span class="resultado-titulo">Resposta #${resultado.linha}</span>
+              <span class="resultado-badge">Curso ${resultado.predicao}</span>
+            </div>
+
+            <div class="respostas-grid">
+              ${resultado.respostas.map((r, i) => `
+                <div class="resposta-box" title="Q${i + 1}">
+                  Q${i + 1}<br>${r}
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="predicao-principal">
+              🎯 Curso Recomendado: ${resultado.predicao}
+              <div style="font-size: 1rem; margin-top: 0.5rem; color: var(--text-secondary);">
+                ${resultado.nomeCurso}
+              </div>
+              <div class="confianca">Confiança: ${resultado.confianca}%</div>
+            </div>
+
+            ${resultado.probabilidades ? `
+              <div class="probabilidades">
+                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">📊 Probabilidades por Curso:</h3>
+                ${resultado.probabilidades.map(prob => `
+                  <div class="prob-item">
+                    <span class="prob-label">Curso ${prob.curso} - ${prob.nome}</span>
+                    <div class="prob-bar-container">
+                      <div class="prob-bar" style="width: ${prob.probabilidade}%">
+                        ${prob.probabilidade}%
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+
+      content.innerHTML = html;
+    }
+
+    function mostrarErro(mensagem) {
+      const content = document.getElementById('content');
+      content.innerHTML = `
+        <div class="erro">
+          <h2>❌ Erro</h2>
+          <p>${mensagem}</p>
+        </div>
+      `;
+    }
+
+    // Carregar resultados ao abrir a página
+    carregarResultados();
+  </script>
+</body>
+</html>
