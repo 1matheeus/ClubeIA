@@ -193,7 +193,33 @@ function getLabelEscala(value, questionIndex) {
 
 function selectAnswer(value) {
   answers[currentQuestion] = value;
-  renderQuestion();
+  
+  // Atualiza apenas os botões sem re-renderizar toda a página
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.classList.remove('selected');
+    if (parseInt(btn.dataset.value) === value) {
+      btn.classList.add('selected');
+    }
+  });
+  
+  // Atualiza o contador de respostas e barra de progresso
+  const answeredCount = answers.filter(a => a !== null).length;
+  const progressFill = document.querySelector('.progress-fill');
+  const questionCounter = document.querySelector('.question-counter');
+  
+  if (progressFill) {
+    progressFill.style.width = `${(answeredCount / quizData.length) * 100}%`;
+  }
+  
+  if (questionCounter) {
+    questionCounter.textContent = `Pergunta ${currentQuestion + 1} de ${quizData.length} | ${answeredCount} resposta(s) submetida(s)`;
+  }
+  
+  // Habilita o botão "Finalizar" se for a última pergunta e todas estiverem respondidas
+  const nextBtn = document.querySelector('#next-btn');
+  if (nextBtn && currentQuestion === quizData.length - 1) {
+    nextBtn.disabled = answeredCount < quizData.length;
+  }
 }
 
 async function salvarRespostasCSV() {
