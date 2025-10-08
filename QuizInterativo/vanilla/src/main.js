@@ -107,12 +107,20 @@ function renderQuestion() {
   app.innerHTML = `
     <div class="quiz-container">
       <div class="projete-header">
+        <div class="header-images-left">
+          <img src="/automa.jpeg" alt="Automação" class="header-img" />
+          <img src="/DS.jpeg" alt="Desenvolvimento de Sistemas" class="header-img" />
+        </div>
         <div class="projete-logo">
           <span class="logo-icon">💡</span>
           <div class="logo-text">
             <span class="logo-title">PROJETE</span>
             <span class="logo-subtitle">FEIRA DE PROJETOS DA ETE FMC</span>
           </div>
+        </div>
+        <div class="header-images-right">
+          <img src="/Bio.jpeg" alt="Biomédicos" class="header-img" />
+          <img src="/Teleco.jpeg" alt="Telecomunicações" class="header-img" />
         </div>
       </div>
       <h1><span class="emoji">🎓</span> <span class="gradient-text">Quiz - Especialização Técnica</span> <span class="emoji">🎯</span></h1>
@@ -121,7 +129,7 @@ function renderQuestion() {
         <div class="progress-fill" style="width: ${(answeredCount / quizData.length) * 100}%"></div>
       </div>
       <p class="question-counter">Pergunta ${currentQuestion + 1} de ${quizData.length} | ${answeredCount} resposta(s) submetida(s)</p>
-      <h2 class="question-text">${question.pergunta}</h2>
+      <h2 class="question-text" data-question-number="${currentQuestion + 1}">${question.pergunta}</h2>
       ${optionsHTML}
       <div class="navigation-buttons">
         <button id="prev-btn" class="btn-secondary" ${currentQuestion === 0 ? 'disabled' : ''}>
@@ -256,12 +264,20 @@ async function renderResults() {
   app.innerHTML = `
     <div class="quiz-container results">
       <div class="projete-header">
+        <div class="header-images-left">
+          <img src="/automa.jpeg" alt="Automação" class="header-img" />
+          <img src="/DS.jpeg" alt="Desenvolvimento de Sistemas" class="header-img" />
+        </div>
         <div class="projete-logo">
           <span class="logo-icon">💡</span>
           <div class="logo-text">
             <span class="logo-title">PROJETE</span>
             <span class="logo-year">2025</span>
           </div>
+        </div>
+        <div class="header-images-right">
+          <img src="/Bio.jpeg" alt="Biomédicos" class="header-img" />
+          <img src="/Teleco.jpeg" alt="Telecomunicações" class="header-img" />
         </div>
       </div>
       <h1>🎉 Quiz Concluído!</h1>
@@ -293,11 +309,24 @@ async function renderResults() {
       34: 'Técnico em Desenvolvimento de Sistemas (Games)'
     };
 
+    // Mapear turmas para casas de Hogwarts
+    const casasHogwarts = {
+      34: { nome: 'Grifinória', emoji: '🦁', class: 'gryffindor' },
+      32: { nome: 'Sonserina', emoji: '🐍', class: 'slytherin' },
+      33: { nome: 'Lufa-Lufa', emoji: '🦡', class: 'hufflepuff' },
+      31: { nome: 'Corvinal', emoji: '🦅', class: 'ravenclaw' }
+    };
+
     const nomeCurso = nomesDescritivos[resultado.predicao] || resultado.nomeCurso;
+    const casaAtribuida = casasHogwarts[resultado.predicao] || { nome: 'Casa', emoji: '🏰', class: 'default' };
 
     app.innerHTML = `
-      <div class="quiz-container results">
+      <div class="quiz-container results ${casaAtribuida.class}-theme">
         <div class="projete-header">
+          <div class="header-images-left">
+            <img src="/automa.jpeg" alt="Automação" class="header-img" />
+            <img src="/DS.jpeg" alt="Desenvolvimento de Sistemas" class="header-img" />
+          </div>
           <div class="projete-logo">
             <span class="logo-icon">💡</span>
             <div class="logo-text">
@@ -305,17 +334,21 @@ async function renderResults() {
               <span class="logo-year">2025</span>
             </div>
           </div>
+          <div class="header-images-right">
+            <img src="/Bio.jpeg" alt="Biomédicos" class="header-img" />
+            <img src="/Teleco.jpeg" alt="Telecomunicações" class="header-img" />
+          </div>
         </div>
         <h1><span class="emoji">🎓</span> <span class="gradient-text">Turma Recomendada</span> <span class="emoji">🎯</span></h1>
         <p class="subtitle-eco"><span class="gradient-text">Qual Curso técnico da ETE FMC você se encaixa</span></p>
         
-        <div class="ia-prediction">
-          <div class="prediction-badge">
+        <div class="ia-prediction ${casaAtribuida.class}-result">
+          <div class="prediction-badge ${casaAtribuida.class}-badge">
             <span class="prediction-number">${resultado.predicao}</span>
           </div>
           <h2 class="prediction-course">${nomeCurso}</h2>
           <p class="prediction-confidence">
-            <span class="confidence-icon">✨</span>
+            <span class="confidence-icon no-gradient">✨</span>
             ${resultado.confianca}% de confiança
           </p>
         </div>
@@ -325,16 +358,17 @@ async function renderResults() {
           ${resultado.probabilidades.map(prob => {
             const nomeDesc = nomesDescritivos[prob.curso] || prob.nome;
             const isRecomendado = prob.curso === resultado.predicao;
+            const casaProb = casasHogwarts[prob.curso] || { emoji: '🏰', class: 'default' };
             return `
-              <div class="prob-item ${isRecomendado ? 'recomendado' : ''}">
+              <div class="prob-item ${isRecomendado ? 'recomendado' : ''} ${casaProb.class}-item">
                 <div class="prob-header">
                   <span class="prob-label">
-                    ${isRecomendado ? '🎯 ' : ''}Turma ${prob.curso}
+                    ${casaProb.emoji} ${isRecomendado ? '🎯 ' : ''}Turma ${prob.curso}
                   </span>
                   <span class="prob-name">${nomeDesc}</span>
                 </div>
                 <div class="prob-bar-container">
-                  <div class="prob-bar" style="width: ${prob.probabilidade}%">
+                  <div class="prob-bar ${casaProb.class}-bar" style="width: ${prob.probabilidade}%">
                     ${prob.probabilidade}%
                   </div>
                 </div>
@@ -372,12 +406,20 @@ async function renderResults() {
     app.innerHTML = `
       <div class="quiz-container results">
         <div class="projete-header">
+          <div class="header-images-left">
+            <img src="/automa.jpeg" alt="Automação" class="header-img" />
+            <img src="/DS.jpeg" alt="Desenvolvimento de Sistemas" class="header-img" />
+          </div>
           <div class="projete-logo">
             <span class="logo-icon">💡</span>
             <div class="logo-text">
               <span class="logo-title">PROJETE</span>
               <span class="logo-year">2025</span>
             </div>
+          </div>
+          <div class="header-images-right">
+            <img src="/Bio.jpeg" alt="Biomédicos" class="header-img" />
+            <img src="/Teleco.jpeg" alt="Telecomunicações" class="header-img" />
           </div>
         </div>
         <h1>❌ Erro</h1>
